@@ -84,6 +84,13 @@ def connect():
                                        passwd="S3y5e3d5",
                                        database="pcndb",
                                        auth_plugin="mysql_native_password")
+
+        mycursor = mydb.cursor()
+        mycursor.execute("select * from pcndb.accounts;")
+        for x in mycursor:
+            print(x)
+
+
         print(mydb)
         if mydb:
             print("-Successful ")
@@ -91,7 +98,6 @@ def connect():
             print("-Unsuccessful ")
     except mysql.connector.errors.ProgrammingError:
         print("Connection to Database Failed")
-
 
 connect()
 
@@ -166,7 +172,7 @@ def getCardDetails(x, y):
         except IndexError:
             pass
 
-
+        mydb.close()
     except mysql.connector.errors.ProgrammingError:
         print("Connection to Database Failed")
 
@@ -349,7 +355,8 @@ def errorChecker(x):
             driver.close()
         except selenium.common.exceptions.NoSuchElementException:
             pass
-        root.geometry("450x500")
+        root.geometry("475x500")
+        #add horizontal scroller wheel
 
         finalMessageLabel.config(text=error)
         # frame.grid(row=10, column=0)
@@ -362,7 +369,7 @@ def verify(x, y):
         pass
     if x == "First_Name":
         if y.isalpha() and y != '':
-            print("First_Name is a string")
+            #print("First_Name is a string")
             return True
         else:
             print("First_Name is NOT a string")
@@ -371,7 +378,7 @@ def verify(x, y):
 
     if x == "Second_name":
         if y.isalpha() and y != '':
-            print("Second_name is a string")
+            #print("Second_name is a string")
             return True
         else:
             print("Second_name is NOT a string")
@@ -381,7 +388,7 @@ def verify(x, y):
     if x == "Email_Address":
         pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
         if re.match(pat, y):
-            print("correct Email Format")
+            #print("correct Email Format")
             return True
         else:
             print("incorrect email format.")
@@ -394,13 +401,22 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
         else:
-            print("password length is fine")
+            #print("password length is fine")
             return True
+
+    if x == "PhoneN":
+        if len(y) == 11 and y.isnumeric:
+            #print("phone Number has correct format ")
+            return True
+        else:
+            print("phone Number has Incorrect format ")
+            verifyErrorsCount = verifyErrorsCount + 1
+            return False
 
     if x == "Postcode":
         pat = "^[A-Za-z0-9_\s]*$"
         if re.match(pat, y) and y != '':
-            print("correct postcode Format")
+            #print("correct postcode Format")
             return True
         else:
             print("incorrect postcode format.")
@@ -410,16 +426,17 @@ def verify(x, y):
     if x == "Door_Number":
         pat = "^[0-9_A-Za-z]*$"
         if re.match(pat, y) and len(y) <= 5 and y != '':
-            print("Door Number is okay")
+            #print("Door Number is okay")
             return True
         else:
             print("Door Number is Incorrect")
             verifyErrorsCount = verifyErrorsCount + 1
             return False
+
     if x == "Street_Name":
         pat = "^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
-            print("Street is a string")
+            #print("Street is a string")
             return True
         else:
             print("Street is NOT a string")
@@ -429,7 +446,7 @@ def verify(x, y):
     if x == "County":
         pat = "^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
-            print("County is a string")
+            #print("County is a string")
             return True
         else:
             print("County is NOT a string")
@@ -439,7 +456,7 @@ def verify(x, y):
     if x == "Country":
         pat = "^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
-            print("Country is a string")
+            #print("Country is a string")
             return True
         else:
             print("Country is NOT a string")
@@ -448,7 +465,7 @@ def verify(x, y):
 
     if x == "16_Digits":
         if y.isnumeric() and len(y) == 16:
-            print("correct 16 digit format")
+            #print("correct 16 digit format")
             return True
         else:
             print("incorrect 16 digits")
@@ -459,7 +476,7 @@ def verify(x, y):
         months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         if y.isnumeric() and len(y) == 2 and y in months:
             # print("expiry 1 ="+ y)
-            print("correct Expiry1 format")
+            #print("correct Expiry1 format")
             return True
         else:
             print("incorrect Expiry1 format")
@@ -468,7 +485,7 @@ def verify(x, y):
 
     if x == "Expiry2":
         if y.isnumeric() and len(y) == 2:
-            print("correct Expiry2  format")
+            #print("correct Expiry2  format")
             return True
         else:
             print("incorrect Expiry2 format")
@@ -477,7 +494,7 @@ def verify(x, y):
 
     if x == "CVV":
         if y.isnumeric() and len(y) == 3:
-            print("correct CVV  format")
+            #print("correct CVV  format")
             return True
         else:
             print("incorrect CVV format")
@@ -487,7 +504,7 @@ def verify(x, y):
     if x == "CardHolderName":
         pat = "^[A-Za-z_\s]*$"
         if re.match(pat, y) and y != '':
-            print("CardHolderName is a string")
+            #print("CardHolderName is a string")
             return True
         else:
             print("CardHolderName is NOT a string")
@@ -495,13 +512,14 @@ def verify(x, y):
             return False
 
 
-def allAccountVerify(fn, sn, ea, ap, p, dn, streetname, county, country, digits16, e1, e2, cvv, chn):
+def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, digits16, e1, e2, cvv, chn):
     global verifyErrorsCount
     verifyErrorsCount = 0
     verify("First_Name", fn)
     verify("Second_name", sn)
     verify("Email_Address", ea)
     verify("Password", ap)
+    verify("PhoneN", pn)
     verify("Postcode", p)
     verify("Door_Number", dn)
     verify("Street_Name", streetname)
@@ -516,6 +534,7 @@ def allAccountVerify(fn, sn, ea, ap, p, dn, streetname, county, country, digits1
     sNL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
     eAL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
     passL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
+    pNL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
     postL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
     dNL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
     streetNL = Label(top, text=" Correct ", bg="Light Green", fg="Black")
@@ -532,16 +551,17 @@ def allAccountVerify(fn, sn, ea, ap, p, dn, streetname, county, country, digits1
     sNL.grid(row=3, column=3, padx=15, pady=10)
     eAL.grid(row=4, column=3, padx=15, pady=10)
     passL.grid(row=5, column=3, padx=15, pady=10)
-    postL.grid(row=6, column=3, padx=15, pady=10)
-    dNL.grid(row=7, column=3, padx=15, pady=10)
-    streetNL.grid(row=8, column=3, padx=15, pady=10)
-    countyL.grid(row=9, column=3, padx=15, pady=10)
-    countryL.grid(row=10, column=3, padx=15, pady=10)
-    digitsL.grid(row=11, column=3, padx=15, pady=10)
-    e1L.grid(row=12, column=3, padx=15, pady=10)
-    e2L.grid(row=13, column=3, padx=15, pady=10)
-    cvvL.grid(row=14, column=3, padx=15, pady=10)
-    cHNL.grid(row=15, column=3, padx=15, pady=10)
+    pNL.grid(row=6, column=3, padx=15, pady=10)
+    postL.grid(row=7, column=3, padx=15, pady=10)
+    dNL.grid(row=8, column=3, padx=15, pady=10)
+    streetNL.grid(row=9, column=3, padx=15, pady=10)
+    countyL.grid(row=10, column=3, padx=15, pady=10)
+    countryL.grid(row=11, column=3, padx=15, pady=10)
+    digitsL.grid(row=12, column=3, padx=15, pady=10)
+    e1L.grid(row=13, column=3, padx=15, pady=10)
+    e2L.grid(row=14, column=3, padx=15, pady=10)
+    cvvL.grid(row=15, column=3, padx=15, pady=10)
+    cHNL.grid(row=16, column=3, padx=15, pady=10)
 
     print(verifyErrorsCount)
     if verifyErrorsCount > 0:
@@ -553,11 +573,13 @@ def allAccountVerify(fn, sn, ea, ap, p, dn, streetname, county, country, digits1
             eAL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("Password", ap):
             passL.configure(text="       X       ", bg="Black", fg="Red")
+        if not verify("PhoneN", pn):
+            pNL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("Postcode", p):
             postL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("Door_Number", dn):
             dNL.configure(text="       X       ", bg="Black", fg="Red")
-        if not verify("Door_Number", dn):
+        if not verify("Street_Name", streetname):
             streetNL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("County", county):
             countyL.configure(text="       X       ", bg="Black", fg="Red")
@@ -573,7 +595,8 @@ def allAccountVerify(fn, sn, ea, ap, p, dn, streetname, county, country, digits1
             cvvL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("CardHolderName", chn):
             cHNL.configure(text="       X       ", bg="Black", fg="Red")
-    """
+
+    # will send data to database for storage
     if verifyErrorsCount == 0:
         try:
             mydb = mysql.connector.connect(host="localhost",
@@ -582,20 +605,37 @@ def allAccountVerify(fn, sn, ea, ap, p, dn, streetname, county, country, digits1
                                            database="pcndb",
                                            auth_plugin="mysql_native_password")
 
-        mycursor = mydb.cursor()
+            mycursor = mydb.cursor()
 
-        mycursor.execute(
-            "select Account_ID from pcndb.accounts where Email_Address = '{}' and Account_Password = '{}'".format(email,
-                                                                                                                  password))
-       
-    """
-        # will send data to database for storage
+            mycursor.execute(
+                "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country)
+            )
 
+
+            print("INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country))
+
+        except mysql.connector.errors.ProgrammingError:
+            print("Connection to Database Failed")
+
+        
+        """
+        '{}'
+        'shahbaz2',
+        'syed2',
+        'shahbaz3535s@gmail.com2',
+        'S3y5e3d52',
+        '07388834444',
+        'E6 1BW',
+        '35',
+        'elizabeth road',
+        'newham',
+        'united kingdom');
+        """
 
 def new_account():
     global top
     top = Toplevel()
-    top.geometry("685x725")
+    top.geometry("685x775")
     top.iconbitmap("C:/Users/Administrator/Documents/Dissertation/connecting_to_database/parking-meter.ico")
     top.title("New Account Set Up")
     top.config(bg="Light pink")
@@ -603,12 +643,6 @@ def new_account():
     new_button_quit.grid(row=0, column=3)
     titleLabel = Label(top, text="NEW USER ACCOUNT SET UP", bg="Light Pink").grid(row=0, column=0, padx=50, pady=10)
 
-    """
-    tB_First_Name, tB_Second_name, tB_Email_Address, tB_Account_Password, tB_Postcode ,tB_Door_Number, tB_County, tB_Country, tB_16_Digits, tB_Expiry1 ,tB_Expiry2 ,tB_CVV, tB_CardHolderName
-    """
-
-    # label_Account_ID = Label(top, text=" ", bg="Light Pink").grid(row= 1, column=0, padx=15, pady=10)
-    # tB_Account_ID = Entry(top, width=50, borderwidth= 4).grid(row= 1, column=2 , padx=15, pady=10)
 
     label_First_Name = Label(top, text="First Name: ", bg="Light Pink").grid(row=2, column=0, padx=15, pady=10)
     tB_First_Name = Entry(top, width=50, borderwidth=4)
@@ -626,60 +660,65 @@ def new_account():
     tB_Account_Password = Entry(top, width=50, borderwidth=4)
     tB_Account_Password.grid(row=5, column=2, padx=15, pady=10)
 
-    label_Postcode = Label(top, text="Postcode: ", bg="Light Pink").grid(row=6, column=0, padx=15, pady=10)
+    label_Account_Phone = Label(top, text="Phone Number (NOT +44, use 07***): ", bg="Light Pink").grid(row=6, column=0, padx=15, pady=10)
+    tB_PhoneN = Entry(top, width=50, borderwidth=4)
+    tB_PhoneN.grid(row=6, column=2, padx=15, pady=10)
+
+    label_Postcode = Label(top, text="Postcode: ", bg="Light Pink").grid(row=7, column=0, padx=15, pady=10)
     tB_Postcode = Entry(top, width=50, borderwidth=4)
-    tB_Postcode.grid(row=6, column=2, padx=15, pady=10)
+    tB_Postcode.grid(row=7, column=2, padx=15, pady=10)
 
-    label_Door_Number = Label(top, text="Door Number: ", bg="Light Pink").grid(row=7, column=0, padx=15, pady=10)
+    label_Door_Number = Label(top, text="Door Number: ", bg="Light Pink").grid(row=8, column=0, padx=15, pady=10)
     tB_Door_Number = Entry(top, width=50, borderwidth=4)
-    tB_Door_Number.grid(row=7, column=2, padx=15, pady=10)
+    tB_Door_Number.grid(row=8, column=2, padx=15, pady=10)
 
-    label_Street_Name = Label(top, text="Street Name: ", bg="Light Pink").grid(row=8, column=0, padx=15, pady=10)
+    label_Street_Name = Label(top, text="Street Name: ", bg="Light Pink").grid(row=9, column=0, padx=15, pady=10)
     tB_Street_Name = Entry(top, width=50, borderwidth=4)
-    tB_Street_Name.grid(row=8, column=2, padx=15, pady=10)
+    tB_Street_Name.grid(row=9, column=2, padx=15, pady=10)
 
-    label_County = Label(top, text="County: ", bg="Light Pink").grid(row=9, column=0, padx=15, pady=10)
+    label_County = Label(top, text="County: ", bg="Light Pink").grid(row=10, column=0, padx=15, pady=10)
     tB_County = Entry(top, width=50, borderwidth=4)
-    tB_County.grid(row=9, column=2, padx=15, pady=10)
+    tB_County.grid(row=10, column=2, padx=15, pady=10)
 
-    label_Country = Label(top, text="Country: ", bg="Light Pink").grid(row=10, column=0, padx=15, pady=10)
+    label_Country = Label(top, text="Country: ", bg="Light Pink").grid(row=11, column=0, padx=15, pady=10)
     tB_Country = Entry(top, width=50, borderwidth=4)
-    tB_Country.grid(row=10, column=2, padx=15, pady=10)
+    tB_Country.grid(row=11, column=2, padx=15, pady=10)
 
-    label_16_Digits = Label(top, text="Card Number (16 Digits): ", bg="Light Pink").grid(row=11, column=0, padx=15,
+    label_16_Digits = Label(top, text="Card Number (16 Digits): ", bg="Light Pink").grid(row=12, column=0, padx=15,
                                                                                          pady=10)
     tB_16_Digits = Entry(top, width=50, borderwidth=4)
-    tB_16_Digits.grid(row=11, column=2, padx=15, pady=10)
+    tB_16_Digits.grid(row=12, column=2, padx=15, pady=10)
 
-    label_Expiry1 = Label(top, text="Expiry Month (2 Digits) : ", bg="Light Pink").grid(row=12, column=0, padx=15,
+    label_Expiry1 = Label(top, text="Expiry Month (2 Digits) : ", bg="Light Pink").grid(row=13, column=0, padx=15,
                                                                                         pady=10)
     tB_Expiry1 = Entry(top, width=50, borderwidth=4)
-    tB_Expiry1.grid(row=12, column=2, padx=15, pady=10)
+    tB_Expiry1.grid(row=13, column=2, padx=15, pady=10)
 
-    label_Expiry2 = Label(top, text="Expiry Year (2 Digits): ", bg="Light Pink").grid(row=13, column=0, padx=15,
+    label_Expiry2 = Label(top, text="Expiry Year (2 Digits): ", bg="Light Pink").grid(row=14, column=0, padx=15,
                                                                                       pady=10)
     tB_Expiry2 = Entry(top, width=50, borderwidth=4)
-    tB_Expiry2.grid(row=13, column=2, padx=15, pady=10)
+    tB_Expiry2.grid(row=14, column=2, padx=15, pady=10)
 
-    label_CVV = Label(top, text="CVV Number (3 Digits):  ", bg="Light Pink").grid(row=14, column=0, padx=15, pady=10)
+    label_CVV = Label(top, text="CVV Number (3 Digits):  ", bg="Light Pink").grid(row=15, column=0, padx=15, pady=10)
     tB_CVV = Entry(top, width=50, borderwidth=4)
-    tB_CVV.grid(row=14, column=2, padx=15, pady=10)
+    tB_CVV.grid(row=15, column=2, padx=15, pady=10)
 
-    label_CardHolderName = Label(top, text="Cardholder Name (as on card): ", bg="Light Pink").grid(row=15, column=0,
+    label_CardHolderName = Label(top, text="Cardholder Name (as on card): ", bg="Light Pink").grid(row=16, column=0,
                                                                                                    padx=15, pady=10)
     tB_CardHolderName = Entry(top, width=50, borderwidth=4)
-    tB_CardHolderName.grid(row=15, column=2, padx=15, pady=10)
+    tB_CardHolderName.grid(row=16, column=2, padx=15, pady=10)
 
     button_details_Submit = Button(top, text="Submit Account Details",
                                    command=lambda: allAccountVerify(tB_First_Name.get(), tB_Second_name.get(),
                                                                     tB_Email_Address.get(), tB_Account_Password.get(),
+                                                                    tB_PhoneN.get(),
                                                                     tB_Postcode.get(), tB_Door_Number.get(),
                                                                     tB_Street_Name.get(), tB_County.get(),
                                                                     tB_Country.get(), tB_16_Digits.get(),
                                                                     tB_Expiry1.get(),
                                                                     tB_Expiry2.get(), tB_CVV.get(),
                                                                     tB_CardHolderName.get()), bg="Light Green")
-    button_details_Submit.grid(row=16, column=2, padx=15, pady=10)
+    button_details_Submit.grid(row=17, column=2, padx=15, pady=10)
 
     # , tB_Second_name.get(), tB_Email_Address.get(), tB_Account_Password.get(), tB_Postcode.get(),tB_Door_Number.get(), tB_County.get(), tB_Country.get(), tB_16_Digits.get(), tB_Expiry1.get(), tB_Expiry2.get(), tB_CVV.get(), tB_CardHolderName.get()
 
