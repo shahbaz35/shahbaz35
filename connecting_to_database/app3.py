@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import ttk
 # import os
 import mysql.connector
 import selenium
@@ -21,6 +22,7 @@ root = Tk()
 root.title('Parking-Charge-Notice Payer')
 root.geometry("475x450")
 root.configure(bg="light blue")
+
 # below will add an icon on the top left of the application
 root.iconbitmap("C:/Users/Administrator/Documents/Dissertation/connecting_to_database/parking-meter.ico")
 
@@ -595,7 +597,7 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
             cvvL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("CardHolderName", chn):
             cHNL.configure(text="       X       ", bg="Black", fg="Red")
-
+    counter = 0
     # will send data to database for storage
     if verifyErrorsCount == 0:
         try:
@@ -607,15 +609,24 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
 
             mycursor = mydb.cursor()
 
-            mycursor.execute(
-                "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country)
-            )
-
-
-            print("INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country))
+            mycursor.execute("SELECT * FROM pcndb.accounts WHERE Email_address = '{}'".format(ea))
+            for x in mycursor:
+                counter = counter + 1
+                print(x)
+            if counter > 0:
+                popUp(1)
+            if counter == 0:
+                mycursor.execute(
+                    "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country)
+                )
+                mydb.commit()
+                # print("INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country))
+                # this will notify user that account has been successfully made
+                popUp(0)
 
         except mysql.connector.errors.ProgrammingError:
             print("Connection to Database Failed")
+
 
         
         """
@@ -631,6 +642,23 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
         'newham',
         'united kingdom');
         """
+
+def popUp(x):
+    top.destroy()
+    second = Tk()
+    second.geometry("450x100")
+    second.iconbitmap("C:/Users/Administrator/Documents/Dissertation/connecting_to_database/parking-meter.ico")
+    second.title("New Account Set Up")
+    second.config(bg="Light pink")
+    new_button_quit = Button(second, text="Exit", command=second.destroy, bg="RED")
+    new_button_quit.grid(row=0, column=3)
+    if x == 0:
+        second.config(bg="Light Green")
+        titleLabel = Label(second, text="NEW USER ACCOUNT HAS BEEN SUCCESSFULLY SET UP", bg="Light GREEN", fg="BLACK").grid(row=0, column=0, padx=50, pady=10)
+    if x == 1:
+        titleLabel = Label(second, text="NEW USER ACCOUNT HAS NOT BEEN SUCCESSFULLY SET UP", bg="RED", fg="BLACK").grid(row=0, column=0, padx=50, pady=10)
+        titleLabel2 = Label(second, text="Email Address is already in Use", bg="RED", fg= "BLACK").grid(row=2, column=0, padx=50, pady=10)
+
 
 def new_account():
     global top
@@ -656,7 +684,7 @@ def new_account():
     tB_Email_Address = Entry(top, width=50, borderwidth=4)
     tB_Email_Address.grid(row=4, column=2, padx=15, pady=10)
 
-    label_Account_Password = Label(top, text="Password: ", bg="Light Pink").grid(row=5, column=0, padx=15, pady=10)
+    label_Account_Password = Label(top, text="Password (must have 8 characters): ", bg="Light Pink").grid(row=5, column=0, padx=15, pady=10)
     tB_Account_Password = Entry(top, width=50, borderwidth=4)
     tB_Account_Password.grid(row=5, column=2, padx=15, pady=10)
 
@@ -668,7 +696,7 @@ def new_account():
     tB_Postcode = Entry(top, width=50, borderwidth=4)
     tB_Postcode.grid(row=7, column=2, padx=15, pady=10)
 
-    label_Door_Number = Label(top, text="Door Number: ", bg="Light Pink").grid(row=8, column=0, padx=15, pady=10)
+    label_Door_Number = Label(top, text="Door Number (No Spaces): ", bg="Light Pink").grid(row=8, column=0, padx=15, pady=10)
     tB_Door_Number = Entry(top, width=50, borderwidth=4)
     tB_Door_Number.grid(row=8, column=2, padx=15, pady=10)
 
