@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter import messagebox
 # import os
+from int import *
 import mysql.connector
 import selenium
 from selenium import webdriver
@@ -92,7 +94,6 @@ def connect():
         for x in mycursor:
             print(x)
 
-
         print(mydb)
         if mydb:
             print("-Successful ")
@@ -100,6 +101,11 @@ def connect():
             print("-Unsuccessful ")
     except mysql.connector.errors.ProgrammingError:
         print("Connection to Database Failed")
+
+
+
+
+
 
 connect()
 
@@ -307,38 +313,40 @@ def automation(x, y):
             ##///////////////////////////////////////////////////////////////////////////////
 
             driver.implicitly_wait(2)
-
-        payPCNButton = driver.find_element(by=By.XPATH, value='//*[@id="one"]/div/div[2]/div/div/div/div/a')
-        payPCNButton.click()
-        payPCNOnlineButton = driver.find_element(by=By.XPATH, value='//*[@id="pcn-pay-fines"]/p[2]/a')
-        payPCNOnlineButton.click()
-        # After clicking on the Payment button there is also a long wait
-        checkoutButton = driver.find_element(by=By.XPATH, value='//*[@id="divShoppingBasketView"]/div[4]/div/div/a[1]')
-        checkoutButton.click()
-        nameOnCardBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_NameOnCard"]')
-        nameOnCardBox.send_keys(auto_nameOnCard)
-        cardNumberBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_CardNumber"]')
-        cardNumberBox.send_keys(auto_cardNumber)
-        expiryMonthBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_SelectedExpiryMonth"]')
-        expiryMonthBox.send_keys(auto_expiryMonth)
-        expiryYearBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_SelectedExpiryYear"]')
-        expiryYearBox.send_keys(auto_expiryYear)
-        cvcNumberBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_CSC"]')
-        cvcNumberBox.send_keys(auto_cvvNumber)
-        driver.implicitly_wait(1)
-
-        checkoutSummaryButton = driver.find_element(by=By.XPATH, value='//*[@id="CheckOutSummary"]')
-        checkoutSummaryButton.click()
-        driver.implicitly_wait(2)
         try:
-            if driver.find_element(by=By.XPATH, value='//*[@id="error-summary-titleitem-0"]').is_displayed():
-                print("Payment Error, Still On Payment Page: ")
-                current_error = driver.find_element(by=By.XPATH, value='//*[@id="error-summary-titleitem-0"]').text
-                errorChecker(current_error)
-                print()
-        except selenium.common.exceptions.NoSuchElementException:
+            payPCNButton = driver.find_element(by=By.XPATH, value='//*[@id="one"]/div/div[2]/div/div/div/div/a')
+            payPCNButton.click()
+            payPCNOnlineButton = driver.find_element(by=By.XPATH, value='//*[@id="pcn-pay-fines"]/p[2]/a')
+            payPCNOnlineButton.click()
+            # After clicking on the Payment button there is also a long wait
+            checkoutButton = driver.find_element(by=By.XPATH, value='//*[@id="divShoppingBasketView"]/div[4]/div/div/a[1]')
+            checkoutButton.click()
+            nameOnCardBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_NameOnCard"]')
+            nameOnCardBox.send_keys(auto_nameOnCard)
+            cardNumberBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_CardNumber"]')
+            cardNumberBox.send_keys(auto_cardNumber)
+            expiryMonthBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_SelectedExpiryMonth"]')
+            expiryMonthBox.send_keys(auto_expiryMonth)
+            expiryYearBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_SelectedExpiryYear"]')
+            expiryYearBox.send_keys(auto_expiryYear)
+            cvcNumberBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_CSC"]')
+            cvcNumberBox.send_keys(auto_cvvNumber)
+            driver.implicitly_wait(1)
+
+            checkoutSummaryButton = driver.find_element(by=By.XPATH, value='//*[@id="CheckOutSummary"]')
+            checkoutSummaryButton.click()
+            driver.implicitly_wait(2)
+            try:
+                if driver.find_element(by=By.XPATH, value='//*[@id="error-summary-titleitem-0"]').is_displayed():
+                    print("Payment Error, Still On Payment Page: ")
+                    current_error = driver.find_element(by=By.XPATH, value='//*[@id="error-summary-titleitem-0"]').text
+                    errorChecker(current_error)
+                    print()
+            except selenium.common.exceptions.NoSuchElementException:
+                pass
+        except selenium.common.exceptions.InvalidSessionIdException:
             pass
-    except selenium.common.exceptions.InvalidSessionIdException:
+    except selenium.common.exceptions.NoSuchElementException:
         pass
 
 
@@ -353,12 +361,12 @@ def errorChecker(x):
         print()
         print(error)
         print("Error Has Been Found Exit Code Initiated")
-        try:
-            driver.close()
-        except selenium.common.exceptions.NoSuchElementException:
-            pass
+        # try:
+        #    driver.close()
+        # except selenium.common.exceptions.NoSuchElementException:
+        #    pass
         root.geometry("475x500")
-        #add horizontal scroller wheel
+        # add horizontal scroller wheel
 
         finalMessageLabel.config(text=error)
         # frame.grid(row=10, column=0)
@@ -371,7 +379,7 @@ def verify(x, y):
         pass
     if x == "First_Name":
         if y.isalpha() and y != '':
-            #print("First_Name is a string")
+            # print("First_Name is a string")
             return True
         else:
             print("First_Name is NOT a string")
@@ -380,7 +388,7 @@ def verify(x, y):
 
     if x == "Second_name":
         if y.isalpha() and y != '':
-            #print("Second_name is a string")
+            # print("Second_name is a string")
             return True
         else:
             print("Second_name is NOT a string")
@@ -390,7 +398,7 @@ def verify(x, y):
     if x == "Email_Address":
         pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
         if re.match(pat, y):
-            #print("correct Email Format")
+            # print("correct Email Format")
             return True
         else:
             print("incorrect email format.")
@@ -403,12 +411,12 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
         else:
-            #print("password length is fine")
+            # print("password length is fine")
             return True
 
     if x == "PhoneN":
         if len(y) == 11 and y.isnumeric:
-            #print("phone Number has correct format ")
+            # print("phone Number has correct format ")
             return True
         else:
             print("phone Number has Incorrect format ")
@@ -418,7 +426,7 @@ def verify(x, y):
     if x == "Postcode":
         pat = "^[A-Za-z0-9_\s]*$"
         if re.match(pat, y) and y != '':
-            #print("correct postcode Format")
+            # print("correct postcode Format")
             return True
         else:
             print("incorrect postcode format.")
@@ -428,7 +436,7 @@ def verify(x, y):
     if x == "Door_Number":
         pat = "^[0-9_A-Za-z]*$"
         if re.match(pat, y) and len(y) <= 5 and y != '':
-            #print("Door Number is okay")
+            # print("Door Number is okay")
             return True
         else:
             print("Door Number is Incorrect")
@@ -438,7 +446,7 @@ def verify(x, y):
     if x == "Street_Name":
         pat = "^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
-            #print("Street is a string")
+            # print("Street is a string")
             return True
         else:
             print("Street is NOT a string")
@@ -448,7 +456,7 @@ def verify(x, y):
     if x == "County":
         pat = "^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
-            #print("County is a string")
+            # print("County is a string")
             return True
         else:
             print("County is NOT a string")
@@ -458,7 +466,7 @@ def verify(x, y):
     if x == "Country":
         pat = "^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
-            #print("Country is a string")
+            # print("Country is a string")
             return True
         else:
             print("Country is NOT a string")
@@ -467,7 +475,7 @@ def verify(x, y):
 
     if x == "16_Digits":
         if y.isnumeric() and len(y) == 16:
-            #print("correct 16 digit format")
+            # print("correct 16 digit format")
             return True
         else:
             print("incorrect 16 digits")
@@ -478,7 +486,7 @@ def verify(x, y):
         months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
         if y.isnumeric() and len(y) == 2 and y in months:
             # print("expiry 1 ="+ y)
-            #print("correct Expiry1 format")
+            # print("correct Expiry1 format")
             return True
         else:
             print("incorrect Expiry1 format")
@@ -486,8 +494,9 @@ def verify(x, y):
             return False
 
     if x == "Expiry2":
-        if y.isnumeric() and len(y) == 2:
-            #print("correct Expiry2  format")
+        if y.isnumeric() and len(y) == 2 and int(y) > 21:
+
+            # print("correct Expiry2  format")
             return True
         else:
             print("incorrect Expiry2 format")
@@ -496,7 +505,7 @@ def verify(x, y):
 
     if x == "CVV":
         if y.isnumeric() and len(y) == 3:
-            #print("correct CVV  format")
+            # print("correct CVV  format")
             return True
         else:
             print("incorrect CVV format")
@@ -506,7 +515,7 @@ def verify(x, y):
     if x == "CardHolderName":
         pat = "^[A-Za-z_\s]*$"
         if re.match(pat, y) and y != '':
-            #print("CardHolderName is a string")
+            # print("CardHolderName is a string")
             return True
         else:
             print("CardHolderName is NOT a string")
@@ -591,7 +600,7 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
             digitsL.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("Expiry1", e1):
             e1L.configure(text="       X       ", bg="Black", fg="Red")
-        if not verify("Expiry2", e1):
+        if not verify("Expiry2", e2):
             e2L.configure(text="       X       ", bg="Black", fg="Red")
         if not verify("CVV", cvv):
             cvvL.configure(text="       X       ", bg="Black", fg="Red")
@@ -617,9 +626,24 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
                 popUp(1)
             if counter == 0:
                 mycursor.execute(
-                    "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country)
+                    "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(
+                        fn, sn, ea, ap, pn, p, dn, streetname, county, country)
                 )
                 mydb.commit()
+                mycursor.execute(
+                    "SELECT * FROM pcndb.accounts WHERE Email_Address = '{}' ;".format(ea))
+                for x in mycursor:
+                    print(x)
+                    accountID = x
+                accountID = accountID[0]
+                mycursor.execute(
+                    "INSERT INTO pcndb.paymentdetails( 16_Digits, Expiry1, Expiry2, CVV, CardHolderName, AccountsAccount_ID) VALUES ('{}', '{}', '{}', '{}', '{}', '{}');".format(
+                        digits16, e1, e2, cvv, chn, accountID)
+                )
+                mydb.commit()
+
+
+
                 # print("INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(fn, sn, ea, ap, pn, p, dn, streetname, county, country))
                 # this will notify user that account has been successfully made
                 popUp(0)
@@ -627,8 +651,6 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
         except mysql.connector.errors.ProgrammingError:
             print("Connection to Database Failed")
 
-
-        
         """
         '{}'
         'shahbaz2',
@@ -643,23 +665,15 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
         'united kingdom');
         """
 
+
 def popUp(x):
     top.destroy()
-    second = Tk()
-    second.geometry("450x100")
-    second.iconbitmap("C:/Users/Administrator/Documents/Dissertation/connecting_to_database/parking-meter.ico")
-    second.title("New Account Set Up")
-    second.config(bg="Light pink")
-    new_button_quit = Button(second, text="Exit", command=second.destroy, bg="RED")
-    new_button_quit.grid(row=0, column=3)
     if x == 0:
-        second.config(bg="Light Green")
-        titleLabel = Label(second, text="NEW USER ACCOUNT HAS BEEN SUCCESSFULLY SET UP", bg="Light GREEN", fg="BLACK").grid(row=0, column=0, padx=50, pady=10)
+        messagebox.showinfo("Success", "NEW USER ACCOUNT HAS BEEN SUCCESSFULLY SET UP")
     if x == 1:
-        titleLabel = Label(second, text="NEW USER ACCOUNT HAS NOT BEEN SUCCESSFULLY SET UP", bg="RED", fg="BLACK").grid(row=0, column=0, padx=50, pady=10)
-        titleLabel2 = Label(second, text="Email Address is already in Use", bg="RED", fg= "BLACK").grid(row=2, column=0, padx=50, pady=10)
-
-
+        messagebox.showinfo("Account Failure",
+                            "NEW USER ACCOUNT HAS NOT BEEN SUCCESSFULLY SET UP '/n' EMAIL ADDRESS IS ALREADY IN USE")
+    
 def new_account():
     global top
     top = Toplevel()
@@ -670,7 +684,6 @@ def new_account():
     new_button_quit = Button(top, text="Exit", command=top.destroy, bg="RED")
     new_button_quit.grid(row=0, column=3)
     titleLabel = Label(top, text="NEW USER ACCOUNT SET UP", bg="Light Pink").grid(row=0, column=0, padx=50, pady=10)
-
 
     label_First_Name = Label(top, text="First Name: ", bg="Light Pink").grid(row=2, column=0, padx=15, pady=10)
     tB_First_Name = Entry(top, width=50, borderwidth=4)
@@ -684,11 +697,15 @@ def new_account():
     tB_Email_Address = Entry(top, width=50, borderwidth=4)
     tB_Email_Address.grid(row=4, column=2, padx=15, pady=10)
 
-    label_Account_Password = Label(top, text="Password (must have 8 characters): ", bg="Light Pink").grid(row=5, column=0, padx=15, pady=10)
+    label_Account_Password = Label(top, text="Password (must have 8 characters): ", bg="Light Pink").grid(row=5,
+                                                                                                          column=0,
+                                                                                                          padx=15,
+                                                                                                          pady=10)
     tB_Account_Password = Entry(top, width=50, borderwidth=4)
     tB_Account_Password.grid(row=5, column=2, padx=15, pady=10)
 
-    label_Account_Phone = Label(top, text="Phone Number (NOT +44, use 07***): ", bg="Light Pink").grid(row=6, column=0, padx=15, pady=10)
+    label_Account_Phone = Label(top, text="Phone Number (NOT +44, use 07***): ", bg="Light Pink").grid(row=6, column=0,
+                                                                                                       padx=15, pady=10)
     tB_PhoneN = Entry(top, width=50, borderwidth=4)
     tB_PhoneN.grid(row=6, column=2, padx=15, pady=10)
 
@@ -696,7 +713,8 @@ def new_account():
     tB_Postcode = Entry(top, width=50, borderwidth=4)
     tB_Postcode.grid(row=7, column=2, padx=15, pady=10)
 
-    label_Door_Number = Label(top, text="Door Number (No Spaces): ", bg="Light Pink").grid(row=8, column=0, padx=15, pady=10)
+    label_Door_Number = Label(top, text="Door Number (No Spaces): ", bg="Light Pink").grid(row=8, column=0, padx=15,
+                                                                                           pady=10)
     tB_Door_Number = Entry(top, width=50, borderwidth=4)
     tB_Door_Number.grid(row=8, column=2, padx=15, pady=10)
 
