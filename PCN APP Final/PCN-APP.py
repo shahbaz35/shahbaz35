@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
-# import os
 from int import *
 import mysql.connector
 import selenium
@@ -11,9 +10,13 @@ from selenium.common.exceptions import NoSuchElementException
 import mysql.connector
 import chromedriver_autoinstaller as chromedriver
 import re
+# pip install pyinstaller
+# pip uninstall typing
 
 chromedriver.install()
-#########################
+
+# This is test data to see if a paid ticket will run
+# login details if decided not to make a new account:
 # shahbaz3535s@gmail.com
 # s3y5e3d5
 # AF95360374
@@ -22,12 +25,14 @@ chromedriver.install()
 
 root = Tk()
 root.title('Parking-Charge-Notice Payer')
-root.geometry("475x450")
+root.geometry("475x400")
 root.configure(bg="light blue")
 
 # below will add an icon on the top left of the application
-root.iconbitmap("parking-meter.ico")
-
+try:
+    root.iconbitmap("parking-meter.ico")
+except TclError:
+    pass
 FinalEmailAddress = ''
 FinalPassword = ''
 PCN_Number = ''
@@ -365,9 +370,14 @@ def errorChecker(x):
         #    driver.close()
         # except selenium.common.exceptions.NoSuchElementException:
         #    pass
-        root.geometry("475x500")
-        # add horizontal scroller wheel
 
+        # add horizontal scroller wheel
+        processLabel.grid_remove()
+        notFoundError = "The Penalty Charge Notice could not be found, please check you have entered the correct notice number and vehicle registration"
+        if error == notFoundError:
+            root.geometry("775x400")
+        if error == "Status: Fully Paid":
+            root.geometry("475x400")
         finalMessageLabel.config(text=error)
         # frame.grid(row=10, column=0)
         finalMessageLabel.grid(row=10, column=0, padx=10, pady=10)
@@ -789,7 +799,7 @@ new_account_button = Button(root, text="New User", command=new_account, bg="Ligh
 new_account_button.grid(row=1, column=1, pady=5)
 
 processLabel = Label(root, text="Please be patient with automation. ", bg="light blue")
-processLabel.grid(row=10, column=0, padx=25, pady=10)
+processLabel.grid(row=11, column=0, padx=25, pady=10)
 
 
 """
