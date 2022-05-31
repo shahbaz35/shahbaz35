@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PCN APP Final.iml" filepath="$PROJECT_DIR$/PCN APP Final.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PCN-Payer.iml" filepath="$PROJECT_DIR$/PCN-Payer.iml" />
     </modules>
   </component>
 </project>
