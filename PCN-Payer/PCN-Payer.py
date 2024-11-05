@@ -8,12 +8,14 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import chromedriver_autoinstaller as chromedriver
+
 chromedriver.install(cwd=True)
 import re
+
 # pip install pyinstaller
 # pip uninstall typing
 
-chromedriver.install()
+#chromedriver.install()
 # This is test data to see if a paid ticket will run
 # login details if decided not to make a new account:
 
@@ -56,6 +58,8 @@ error = ''
 current_error = ''
 driver = ''
 verifyErrorsCount = 0
+
+
 def connect():
     try:
         mydb = mysql.connector.connect(host="localhost",
@@ -75,7 +79,11 @@ def connect():
             print("-Unsuccessful ")
     except mysql.connector.errors.ProgrammingError:
         print("Connection to Database Failed")
+
+
 connect()
+
+
 def getCardDetails(x, y):
     global auto_refNo
     global auto_numberPlate
@@ -94,8 +102,8 @@ def getCardDetails(x, y):
         mydb = mysql.connector.connect(host="localhost",
                                        user="root",
                                        passwd="S3y5e3d5",
-                                       database="pcndb",
-                                       auth_plugin="mysql_native_password")
+                                       database="pcndb")  # ,
+        # auth_plugin="mysql_native_password")
 
         mycursor = mydb.cursor()
 
@@ -146,6 +154,8 @@ def getCardDetails(x, y):
         mydb.close()
     except mysql.connector.errors.ProgrammingError:
         print("Connection to Database Failed")
+
+
 def loginFunction():
     userEmail = emailTextBox.get()
     userPassword = passwordTextBox.get()
@@ -166,6 +176,8 @@ def loginFunction():
         getCardDetails(userEmail, userPassword)
     else:
         message_LabelC.grid_remove()
+
+
 def page2():
     message_LabelC.grid_remove()
     userFoundLabel.grid_remove()
@@ -182,6 +194,8 @@ def page2():
     submitButton = Button(root, text=" Submit ", width=15,
                           command=lambda: submission(pcnTextBox.get(), regTextBox.get()), fg="black", bg="light pink")
     submitButton.grid(row=6, column=0, padx=50, pady=15)
+
+
 def submission(PCN, reg):
     print("PCN: " + PCN + "    , REG: " + reg)
     auto_ref_no = PCN
@@ -199,8 +213,10 @@ def submission(PCN, reg):
         regFailLabel.grid_remove()
         # this is where all details from database will be gathered and the automation will begin
         automation(auto_ref_no, auto_number_plate)
+
+
 def automation(x, y):
-    #print(auto_email_address)
+    # print(auto_email_address)
     print("Automation stage for redbridge website")
     automationLabel.grid(row=8, column=0)
     global driver
@@ -245,9 +261,11 @@ def automation(x, y):
             infoContravention = driver.find_element(by=By.XPATH,
                                                     value='//*[@id="one"]/div/div[1]/div/div/div[1]/ul/li[4]').text
             print(infoContravention)
-            infoStreet = driver.find_element(by=By.XPATH, value='//*[@id="one"]/div/div[1]/div/div/div[1]/ul/li[5]').text
+            infoStreet = driver.find_element(by=By.XPATH,
+                                             value='//*[@id="one"]/div/div[1]/div/div/div[1]/ul/li[5]').text
             print(infoStreet)
-            infoLocation = driver.find_element(by=By.XPATH, value='//*[@id="one"]/div/div[1]/div/div/div[1]/ul/li[6]').text
+            infoLocation = driver.find_element(by=By.XPATH,
+                                               value='//*[@id="one"]/div/div[1]/div/div/div[1]/ul/li[6]').text
             print(infoLocation)
         except AttributeError:
             pass
@@ -264,7 +282,8 @@ def automation(x, y):
             payPCNOnlineButton = driver.find_element(by=By.XPATH, value='//*[@id="pcn-pay-fines"]/p[2]/a')
             payPCNOnlineButton.click()
             # After clicking on the Payment button there is also a long wait
-            checkoutButton = driver.find_element(by=By.XPATH, value='//*[@id="divShoppingBasketView"]/div[4]/div/div/a[1]')
+            checkoutButton = driver.find_element(by=By.XPATH,
+                                                 value='//*[@id="divShoppingBasketView"]/div[4]/div/div/a[1]')
             checkoutButton.click()
             nameOnCardBox = driver.find_element(by=By.XPATH, value='//*[@id="CardDetailsModel_NameOnCard"]')
             nameOnCardBox.send_keys(auto_name_on_card)
@@ -304,6 +323,8 @@ def automation(x, y):
             pass
     except selenium.common.exceptions.NoSuchElementException:
         pass
+
+
 def errorChecker(x):
     global finalMessageLabel
     error = x
@@ -316,7 +337,8 @@ def errorChecker(x):
         print(error)
         print("Error Has Been Found Exit Code Initiated")
         processLabel.grid_remove()
-        notFoundError = "The Penalty Charge Notice could not be found, please check you have entered the correct notice number and vehicle registration"
+        notFoundError = ("The Penalty Charge Notice could not be found, "
+                         "please check you have entered the correct notice number and vehicle registration")
         if error == notFoundError:
             root.geometry("775x400")
         if error == "Status: Fully Paid":
@@ -324,6 +346,8 @@ def errorChecker(x):
         finalMessageLabel.config(text=error)
         # frame.grid(row=10, column=0)
         finalMessageLabel.grid(row=10, column=0, padx=10, pady=10)
+
+
 def verify(x, y):
     global verifyErrorsCount
     if x == "Account_ID":
@@ -345,7 +369,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "Email_Address":
-        pat = "^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
+        pat = r"^[a-zA-Z0-9-_]+@[a-zA-Z0-9]+\.[a-z]{1,3}$"
         if re.match(pat, y):
             # print("correct Email Format")
             return True
@@ -370,7 +394,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "Postcode":
-        pat = "^[A-Za-z0-9_\s]*$"
+        pat = r"^[A-Za-z0-9_\s]*$"
         if re.match(pat, y) and y != '':
             # print("correct postcode Format")
             return True
@@ -379,7 +403,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "Door_Number":
-        pat = "^[0-9_A-Za-z]*$"
+        pat = r"^[0-9_A-Za-z]*$"
         if re.match(pat, y) and len(y) <= 5 and y != '':
             # print("Door Number is okay")
             return True
@@ -388,7 +412,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "Street_Name":
-        pat = "^[A-Za-z\s]*$"
+        pat = r"^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
             # print("Street is a string")
             return True
@@ -397,7 +421,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "County":
-        pat = "^[A-Za-z\s]*$"
+        pat = r"^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
             # print("County is a string")
             return True
@@ -406,7 +430,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "Country":
-        pat = "^[A-Za-z\s]*$"
+        pat = r"^[A-Za-z\s]*$"
         if y != '' and re.match(pat, y):
             # print("Country is a string")
             return True
@@ -448,7 +472,7 @@ def verify(x, y):
             verifyErrorsCount = verifyErrorsCount + 1
             return False
     if x == "CardHolderName":
-        pat = "^[A-Za-z_\s]*$"
+        pat = r"^[A-Za-z_\s]*$"
         if re.match(pat, y) and y != '':
             # print("CardHolderName is a string")
             return True
@@ -456,6 +480,8 @@ def verify(x, y):
             print("CardHolderName is NOT a string")
             verifyErrorsCount = verifyErrorsCount + 1
             return False
+
+
 def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, digits16, e1, e2, cvv, chn):
     global verifyErrorsCount
     verifyErrorsCount = 0
@@ -554,7 +580,9 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
                 popUp(1)
             if counter == 0:
                 mycursor.execute(
-                    "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES ( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(
+                    "INSERT INTO pcndb.accounts(First_Name, Second_Name,Email_Address,Account_Password, "
+                    "Phone_Number, Postcode, Door_Number, Street_Name, County, Country) VALUES "
+                    "( '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}');".format(
                         fn, sn, ea, ap, pn, p, dn, streetname, county, country)
                 )
                 mydb.commit()
@@ -565,7 +593,9 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
                     accountID = x
                 accountID = accountID[0]
                 mycursor.execute(
-                    "INSERT INTO pcndb.paymentdetails( 16_Digits, Expiry1, Expiry2, CVV, CardHolderName, AccountsAccount_ID) VALUES ('{}', '{}', '{}', '{}', '{}', '{}');".format(
+                    "INSERT INTO pcndb.paymentdetails( 16_Digits, Expiry1, Expiry2, CVV, "
+                    "CardHolderName, AccountsAccount_ID) VALUES "
+                    "('{}', '{}', '{}', '{}', '{}', '{}');".format(
                         digits16, e1, e2, cvv, chn, accountID)
                 )
                 mydb.commit()
@@ -575,6 +605,8 @@ def allAccountVerify(fn, sn, ea, ap, pn, p, dn, streetname, county, country, dig
 
         except mysql.connector.errors.ProgrammingError:
             print("Connection to Database Failed")
+
+
 def popUp(x):
     top.destroy()
     if x == 0:
@@ -582,11 +614,13 @@ def popUp(x):
     if x == 1:
         messagebox.showinfo("Account Failure",
                             "NEW USER ACCOUNT HAS NOT BEEN SUCCESSFULLY SET UP EMAIL ADDRESS IS ALREADY IN USE")
+
+
 def new_account():
     global top
     top = Toplevel()
     top.geometry("685x775")
-    top.iconbitmap("C:/Users/Administrator/Documents/Dissertation/connecting_to_database/parking-meter.ico")
+    top.iconbitmap("C:/Users/Admin/Documents/GitHub/shahbaz35/PCN-Payer/parking-meter.ico")
     top.title("New Account Set Up")
     top.config(bg="Light pink")
     new_button_quit = Button(top, text="Exit", command=top.destroy, bg="RED")
@@ -658,6 +692,8 @@ def new_account():
                                                                     tB_CardHolderName.get()), bg="Light Green")
     button_details_Submit.grid(row=17, column=2, padx=15, pady=10)
     # , tB_Second_name.get(), tB_Email_Address.get(), tB_Account_Password.get(), tB_Postcode.get(),tB_Door_Number.get(), tB_County.get(), tB_Country.get(), tB_16_Digits.get(), tB_Expiry1.get(), tB_Expiry2.get(), tB_CVV.get(), tB_CardHolderName.get()
+
+
 emailLabel = Label(root, text="Enter User Email: ", bg="light blue")
 emailLabel.grid(row=0, column=0, padx=25, pady=10)
 emailTextBox = Entry(root, width=50, borderwidth=4)
