@@ -1,0 +1,50 @@
+ CREATE DATABASE IF NOT EXISTS `pcndb`;
+ USE `pcndb`;
+ 
+ -- Table structure for table `accounts`
+ 
+ CREATE TABLE `accounts` (
+ `Account_ID` int NOT NULL AUTO_INCREMENT,
+ `First_Name` char(255) NOT NULL,
+ `Second_Name` char(255) NOT NULL,
+ `Email_Address` char(255) NOT NULL,
+ `Account_Password` char(255) NOT NULL,
+ `Phone_Number` char(11) NOT NULL,
+ `Postcode` char(255) NOT NULL,
+ `Door_Number` char(255) NOT NULL,
+ `Street_Name` char(255) NOT NULL,
+ `County` char(255) NOT NULL,
+ `Country` char(255) NOT NULL,
+ PRIMARY KEY (`Account_ID`),
+ UNIQUE KEY `Account_ID_UNIQUE` (`Account_ID`)
+ ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci;
+
+DROP TABLE IF EXISTS `paymentdetails`;
+
+CREATE TABLE `paymentdetails` (
+ `Card_ID` int NOT NULL AUTO_INCREMENT,
+ `16_Digits` varchar(16) NOT NULL,
+ `Expiry1` char(2) NOT NULL,
+ `Expiry2` char(2) NOT NULL,
+ `CVV` char(4) NOT NULL,
+ `CardHolderName` varchar(45) NOT NULL,
+ `AccountsAccount_ID` int NOT NULL,
+ PRIMARY KEY (`Card_ID`),
+ KEY `FKPaymentDet885388` (`AccountsAccount_ID`),
+ CONSTRAINT `FKPaymentDet885388` FOREIGN KEY (`AccountsAccount_ID`) REFERENCES `accounts`
+(`Account_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `ticket` (
+ `Ticket_ID` int NOT NULL AUTO_INCREMENT,
+ `Price` int NOT NULL,
+ `PCN_Number` char(255) NOT NULL,
+ `Date` date NOT NULL,
+ `AccountsAccount_ID` int NOT NULL,
+ PRIMARY KEY (`Ticket_ID`),
+ KEY `FKTicket737398` (`AccountsAccount_ID`),
+ CONSTRAINT `FKTicket737398` FOREIGN KEY (`AccountsAccount_ID`) REFERENCES `accounts`
+(`Account_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
