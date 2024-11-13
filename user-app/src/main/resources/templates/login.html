@@ -1,21 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
 </head>
 <body>
-<h2>Login</h2>
-<!-- Login form -->
-<form action="/login" method="POST">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br><br>
+    <h2>Login</h2>
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
+    <!-- Display error message if username already exists -->
+    <div th:if="${error}" style="color: red;">
+        <p th:text="${error}"></p>
+    </div>
 
-    <button type="submit">Login</button>
-</form>
 
+    <!-- Login form -->
+    <form action="/login" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button type="submit">Login</button>
+
+    </form>
+    <div>
+        <br>
+        <form action="/forgot" method = "GET">
+            <button type="submit" > Forgot Username </button>
+        </form>
+        <br>
+        <form action="/register" method = "GET">
+            <button type="submit" > Register </button>
+        </form>
+    </div>
 </body>
 </html>

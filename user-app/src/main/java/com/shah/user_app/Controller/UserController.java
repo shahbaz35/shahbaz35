@@ -1,6 +1,9 @@
-package com.shah.user_app;
+package com.shah.user_app.Controller;
 
 
+import com.shah.user_app.Service.UserService;
+import com.shah.user_app.User;
+import jakarta.persistence.PostRemove;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +35,11 @@ public class UserController {
         // Check if the user is already logged in
         // If you have some session or user service to check login status
 
-        if (user != null) {
-            // If the user is logged in, redirect to another page (e.g., home or profile)
-            return "redirect:/home";  // Redirecting logged-in users to the home page
-        }
+//        if (user != null) {
+//            // If the user is logged in, redirect to another page (e.g., home or profile)
+//            return "redirect:/home";  // Redirecting logged-in users to the home page
+//        }
+
         return "register";  // Returns the register.html view
     }
 
@@ -43,15 +47,19 @@ public class UserController {
     @PostMapping("/register")
     public String registerUser(@RequestParam String username,
                                @RequestParam String password,
+                               @RequestParam String email,
                                Model model) {
         // Check if the username already exists
         if (userService.findByUsername(username).isPresent()) {
             model.addAttribute("error", "Username already exists.");
             return "register";  // Return to the register page with an error message
+        }else if (userService.findByEmail(email).isPresent()){
+            model.addAttribute("error", "Email already exists with another account");
+
         }
 
         // Create a new User object and set its properties
-        User newUser = new User(username, password, "USER");
+        User newUser = new User(username, password, email, "USER");
         userService.saveUser(newUser);  // Save the user to the database
 
         return "redirect:/login";  // Redirect to the login page after successful registration
@@ -86,6 +94,29 @@ public class UserController {
             return "login";  // Return to the login page with an error message
         }
     }
+
+    @GetMapping("/forgot")
+    public String showForgotUsernameForm() {
+        return "forgotUsername";  // Returns the login.html view
+    }
+
+    @PostMapping("/forgot")
+    public String usernameSearch(@RequestParam String email, Model model){
+
+        Optional<User> userOptional = userService.findByEmail(email);
+        // Check if user exists
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            String username = userOptional.get().getUsername();
+            model.addAttribute("error", "Email already exists with another account:" + username);
+            return "login"; // redirect to login page with username in error message
+        }else{
+            model.addAttribute("error", "Email does not exist");
+            return "forgotUsername"; // redirect to login page with username in error message
+        }
+
+    }
+
 }
 
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Forgot Username</title>
+</head>
+<body>
+    <h2>Forgot Username</h2>
+    <!-- Forgot Username form -->
+    <form action="/forgot" method="POST">
+        <label for="email">Email: </label>
+        <input type="email" id="email" name="email" required><br><br>
+        <button type="submit">Get Username</button>
+    </form>
+
+    <div>
+        <br>
+        <form action="/login" method = "GET">
+            <button type="submit" > Login  </button>
+        </form>
+    </div>
+
+    <!-- Display error message if username already exists -->
+    <div th:if="${error}" style="color: red;">
+        <p th:text="${error}"></p>
+    </div>
+
+</body>
+</html>
