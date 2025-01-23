@@ -1,4 +1,4 @@
-package com.shah.user_app;
+package com.shah.user_app.Model;
 
 
 import jakarta.persistence.*;

@@ -1,6 +1,6 @@
 package com.shah.user_app.repository;
 
-import com.shah.user_app.User;
+import com.shah.user_app.Model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
